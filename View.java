@@ -8,7 +8,7 @@ import javax.swing.SwingUtilities;
 
 public class View extends JFrame{
     
-    private int [][] maze = 
+    static int [][] maze = 
     { {1,1,1,1,1,1,1,1,1,1,1,1,1},
       {1,0,1,0,1,0,1,0,0,0,0,0,1},
       {1,0,1,0,0,0,1,0,1,1,1,0,1},
@@ -21,14 +21,16 @@ public class View extends JFrame{
       {1,1,1,1,1,1,1,1,1,1,1,1,1}
     
     };
+    private final int [][] originMaze = maze;
     
-    private final List<Integer> path = new ArrayList<Integer>();
+    public static List<Integer> path = new ArrayList<Integer>();
     
     public View(){
         setSize(640,480);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         searchPath(maze,1,1,path);
+        repaint();
     }
     @Override
     public void paint(Graphics g){
@@ -56,8 +58,13 @@ public class View extends JFrame{
     	   g.fillRect(pathX*30, pathY*30, 30, 30);
        }
     }
-    public static boolean searchPath(int[][] maze, int x, int y, List<Integer> path) {
-		
+    public void resetMaze() {
+    	maze = originMaze;
+    }
+    public void resetPath() {
+    	path = new ArrayList<Integer>();
+    }
+    public boolean searchPath(int[][] maze, int x, int y, List<Integer> path) {
 		if ( maze[y][x] == 9) {
 			path.add(x);
 			path.add(y);
@@ -110,7 +117,10 @@ public class View extends JFrame{
             public void run() {
                 View view = new View();
                 view.setVisible(true);
-                view.repaint();
+                
+                	view.resetMaze();
+                	view.resetPath();
+                	view.searchPath(view.maze, 1, 1, view.path);
             }
         });
     }
